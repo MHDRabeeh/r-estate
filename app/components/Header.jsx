@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import React from 'react'
 import { FaSearch } from 'react-icons/fa'
+import { SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
 
 export default function Header() {
     return (
@@ -19,25 +20,30 @@ export default function Header() {
                     <button>
                         <FaSearch className=" text-slate-600" />
                     </button>
-                
+
                 </form>
                 <ul className='flex gap-4'>
-                        <Link href="/">
-                            <li className='hidden md:inline text-slate-700 hover:underline'>
-                                Home
-                            </li>
-                        </Link>
-                        <Link href="/about">
-                            <li className='hidden md:inline text-slate-700 hover:underline'>
-                               About
-                            </li>
-                        </Link>
+                    <Link href="/">
+                        <li className='hidden md:inline text-slate-700 hover:underline'>
+                            Home
+                        </li>
+                    </Link>
+                    <Link href="/about">
+                        <li className='hidden md:inline text-slate-700 hover:underline'>
+                            About
+                        </li>
+                    </Link>
+                    <SignedIn>
+                        <UserButton />
+                    </SignedIn>
+                    <SignedOut>
                         <Link href="/sign-in">
                             <li className='hidden md:inline text-slate-700 hover:underline'>
-                          Sing in 
+                                Sing in
                             </li>
                         </Link>
-                    </ul>
+                    </SignedOut>
+                </ul>
             </div>
         </header>
     )
