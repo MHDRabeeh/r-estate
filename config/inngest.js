@@ -1,6 +1,8 @@
 import { Inngest } from "inngest";
 import dbConnect from "./db";
+
 import User from "@/models/User";
+
 export const inngest = new Inngest({ id: "estate-flow" });
 
 
