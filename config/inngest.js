@@ -5,7 +5,7 @@ export const inngest = new Inngest({ id: "estate-flow" });
 
 
 export const syncUserCreation = inngest.createFunction(
-    {id:"sync-user-from-clerk"},
+    {id:"create-user-estate-flow"},
     {event:"clerk/user.created"},
     async({event})=>{
         console.log("Start user sync...");
