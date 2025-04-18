@@ -21,6 +21,10 @@ const ListingSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  discountPrice: {
+    type: String,
+    required: true,
+  },
   bedrooms: {
     type: String,
     required: true,
@@ -29,13 +33,20 @@ const ListingSchema = new mongoose.Schema({
     type: Boolean,
     required: true,
   },
+  sell: {
+    type: Boolean,
+    required: true,
+  },
+  rent: {
+    type: Boolean,
+    required: true,
+  },
   parking: {
     type: Boolean,
     required: true,
   },
   type: {
-    type: Boolean,
-    required: true,
+    type: String,
   },
   imageUrls: {
     type: Array,
@@ -48,5 +59,6 @@ const ListingSchema = new mongoose.Schema({
   },
 });
 
-const Listing = mongoose.models.Listing || mongoose.model('Listing', ListingSchema);
+const Listing =
+  mongoose.models.Listing || mongoose.model("Listing", ListingSchema);
 export default Listing;
