@@ -41,8 +41,6 @@ const CreateListing = () => {
         try {
             const token = await getToken()
             const { data } = await axios.post("/api/listing/create", formData, { headers: { Authorization: `Bearer ${token}` } })
-            console.log(data.message,"kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk");
-            
             if (data.success) {
                 setData({
                     name: "", description: "", address: "", regularPrice: "",
@@ -55,7 +53,6 @@ const CreateListing = () => {
                 console.log(data.listedData);
                 
             }
-
         } catch (error) {
                 console.log(error.message);
                 
