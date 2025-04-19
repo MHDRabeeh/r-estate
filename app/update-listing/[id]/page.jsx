@@ -9,8 +9,6 @@ import Image from "next/image";
 export default function UpdateListing() {
     const { getToken } = useAuth()
     const { id: listingId } = useParams();
-
-    const [cloudinaryPublicId, setCloudinaryPublicId] = useState([])
     const [data, setData] = useState({
         name: "", description: "", address: "", regularPrice: "",
         bathrooms: "",
@@ -22,8 +20,10 @@ export default function UpdateListing() {
         sell: false,
         rent: false,
         imageUrls: [],
-        NewimageUrl:[]
+        NewimageUrl: []
     })
+    console.log(data.NewimageUrl);
+
 
     useEffect(() => {
 
@@ -65,43 +65,54 @@ export default function UpdateListing() {
         });
         try {
 
+
+
         } catch (error) {
 
         }
     }
-    const removeImage = async ( imageUrl) => {
+    const removeImage = async (imageUrl) => {
         try {
             const token = await getToken();
-            const {data}= await axios.put("/api/delete/cloudinary-image", { imageUrl,listingId }, { headers: { Authorization: `Bearer ${token}` } })
-            if(data.success){
-                setData((prev)=>(
-                    {...prev,imageUrls:data.images}
-                  ))
-            }else{
+            const { data } = await axios.put("/api/delete/cloudinary-image", { imageUrl, listingId }, { headers: { Authorization: `Bearer ${token}` } })
+            if (data.success) {
+                setData((prev) => (
+                    { ...prev, imageUrls: data.images }
+                ))
+            } else {
                 console.log(data);
-                
+
             }
-         
+
 
         } catch (error) {
-        console.log(error);
-        
+            console.log(error);
+
         }
+    }
+    const removeNewSelectedImg = (removeIndex)=>{
+        setData((prev)=>{
+            const updatedImageArray = prev.NewimageUrl.filter((_,i)=>i!==removeIndex)
+            return(
+                {...prev,NewimageUrl:updatedImageArray}
+            )
+        })
+
     }
     return (
         <main className='max-w-4xl mx-auto p-3 '>
-            <h2 className='text-3xl font-semibold text-center py-5'>Create a Listing</h2>
+            <h2 className='text-3xl font-semibold text-center py-5'>Update  Listing</h2>
             <form onSubmit={handleSubmit} className='flex flex-col sm:flex-row gap-5'>
                 <div className='flex flex-col gap-3 sm:w-1/2 '>
-                    <input onChange={(e) => setData(pre => ({ ...pre, name: e.target.value }))} type="text" id='name' className=' w-full shadow-sm  border border-gray-300 rounded-lg p-3'
+                    <input required onChange={(e) => setData(pre => ({ ...pre, name: e.target.value }))} type="text" id='name' className=' w-full shadow-sm  border border-gray-300 rounded-lg p-3'
                         value={data.name} placeholder='Name' />
 
                     <textarea onChange={(e) => setData(pre => ({ ...pre, description: e.target.value }))}
-                        id="discription" className='w-full border border-gray-300 rounded-lg p-3'
+                       required  id="discription" className='w-full border border-gray-300 rounded-lg p-3'
                         value={data.description} placeholder='Discription'>
                     </textarea>
                     <input onChange={(e) => setData(pre => ({ ...pre, address: e.target.value }))}
-                        type="text" id='address' className=' w-full  border border-gray-300 rounded-lg p-3'
+                       required  type="text" id='address' className=' w-full  border border-gray-300 rounded-lg p-3'
                         value={data.address} placeholder='Address' />
 
                     <div className='flex flex-wrap gap-6'>
@@ -133,24 +144,27 @@ export default function UpdateListing() {
                     </div>
                     <div className='flex my-4 flex-wrap gap-6'>
                         <div className='flex items-center gap-2'>
-                            <input
+                            <input required
                                 onChange={(e) => setData(pre => ({ ...pre, bedrooms: e.target.value }))}
-                                value={data.bedrooms} type="text" className='w-10 h-10 p-3 border rounded-lg border-gray-300' />
+                                min="0"
+                                value={data.bedrooms} type="number" className='w-14 h-10 p-3 border rounded-lg border-gray-300' />
                             <p>beds</p>
 
                         </div>
                         <div className='flex items-center gap-2'>
-                            <input type="text"
+                            <input type="number"required
                                 onChange={(e) => setData(pre => ({ ...pre, bathrooms: e.target.value }))}
                                 value={data.bathrooms}
-                                className='w-10 h-10 p-3 border rounded-lg border-gray-300' />
+                                min="0"
+                                className='w-14 h-10 p-3 border rounded-lg border-gray-300' />
                             <p>baths</p>
                         </div>
                         <div className='flex items-center gap-2'>
-                            <input type="text"
+                            <input min="0" required type="number"
                                 onChange={(e) => setData(pre => ({ ...pre, regularPrice: e.target.value }))}
+
                                 value={data.regularPrice}
-                                className='w-10 h-10 p-3 border rounded-lg border-gray-300' />
+                                className='w-20 h-10 p-3 border rounded-lg border-gray-300' />
                             <div className='flex flex-col items-center'>
                                 <p>Regular price</p>
                                 <span className='text-xs '>( $ / month)</span>
@@ -158,9 +172,9 @@ export default function UpdateListing() {
 
                         </div>
                         <div className='flex items-center gap-2'>
-                            <input onChange={(e) => setData(pre => ({ ...pre, discountPrice: e.target.value }))}
+                            <input min="0" required onChange={(e) => setData(pre => ({ ...pre, discountPrice: e.target.value }))}
                                 value={data.discountPrice}
-                                type="text" className='w-10 h-10 p-3 border rounded-lg border-gray-300' />
+                                type="number" className='w-20 h-10 p-3 border rounded-lg border-gray-300' />
                             <div className='flex flex-col items-center'>
                                 <p>Discount price</p>
                                 <span className='text-xs '>( $ / month)</span>
@@ -180,17 +194,17 @@ export default function UpdateListing() {
                             const src = isFile ? URL.createObjectURL(img) : img;
                             return (
                                 <div key={i} className="relative group">
-                             
-                                        <img
-                                            key={i}
-                                            src={src}
-                                            alt="preview"
-                                         
-                                            className="object-cover rounded-lg border relative w-full h-24"
-                                        />
+
+                                    <img
+                                        key={i}
+                                        src={src}
+                                        alt="preview"
+
+                                        className="object-cover rounded-lg border relative w-full h-24"
+                                    />
                                     <button
                                         type="button"
-                                        onClick={() => removeImage( src)}
+                                        onClick={() => removeImage(src)}
                                         className="absolute top-1 right-1 bg-black bg-opacity-50 text-white rounded-full p-1 text-xs "
                                     >
                                         ❌
@@ -198,13 +212,55 @@ export default function UpdateListing() {
                                 </div>
                             );
                         })}
+                        {data.NewimageUrl && data.NewimageUrl.map((img, i) => {
+                            const isFile = img instanceof File;
+                            const src = isFile ? URL.createObjectURL(img) : img;
+
+                            return (
+                                <div key={i} className="relative group">
+
+                                    <img
+                                        key={i}
+                                        src={src}
+                                        alt="preview"
+
+                                        className="object-cover rounded-lg border relative w-full h-24"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => removeNewSelectedImg(i)}
+                                        className="absolute top-1 right-1 bg-black bg-opacity-50 text-white rounded-full p-1 text-xs "
+                                    >
+                                        ❌
+                                    </button>
+                                </div>
+                            )
+
+                        })}
                     </div>
                     <div className='flex  gap-3'>
                         <input
-                            onChange={(e) => setData(prev => ({
-                                ...prev,
-                                NewimageUrl: Array.from(e.target.files)
-                            }))}
+                            onChange={(e) => {
+                                const newFiles = Array.from(e.target.files);
+                                setData(prev => {
+                                    const totalCount = (Array.isArray(prev.NewimageUrl) ? prev.NewimageUrl.length : 0) + newFiles?.length + prev?.imageUrls?.length
+                                    if (totalCount > 7) {
+                                        alert("You can only upload up to 6 images.")
+                                        return prev;
+                                    }
+                                    if (prev.NewimageUrl) {
+                                        return {
+                                            ...prev, NewimageUrl: [...prev.NewimageUrl, ...newFiles]
+                                        }
+                                    }else{
+                                        return {
+                                            ...prev, NewimageUrl: [...newFiles]
+                                        }
+                                    }
+
+                                }
+                                )
+                            }}
                             type="file"
                             className='w-full rounded-lg p-3 border
                              file:border-1 file:p-2 file:rounded file:text-sm file:font-semibold
