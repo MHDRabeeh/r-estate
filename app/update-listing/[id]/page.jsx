@@ -5,6 +5,7 @@ import axios from "axios";
 import { useEffect } from "react";
 import { useState } from "react";
 import { useParams } from "next/navigation";
+import Image from "next/image";
 export default function UpdateListing() {
     const { getToken } = useAuth()
     const { id: listingId } = useParams();
@@ -20,7 +21,8 @@ export default function UpdateListing() {
         // type: false,
         sell: false,
         rent: false,
-        imageUrls: []
+        imageUrls: [],
+        NewimageUrl:[]
     })
 
     useEffect(() => {
@@ -67,12 +69,23 @@ export default function UpdateListing() {
 
         }
     }
-    const getPublicId = (imageURL) => imageURL.split("/").pop().split(".")[0];
-    const removeImage = async (indexToRemove) => {
+    const removeImage = async ( imageUrl) => {
         try {
+            const token = await getToken();
+            const {data}= await axios.put("/api/delete/cloudinary-image", { imageUrl,listingId }, { headers: { Authorization: `Bearer ${token}` } })
+            if(data.success){
+                setData((prev)=>(
+                    {...prev,imageUrls:data.images}
+                  ))
+            }else{
+                console.log(data);
+                
+            }
+         
 
         } catch (error) {
-
+        console.log(error);
+        
         }
     }
     return (
@@ -117,13 +130,6 @@ export default function UpdateListing() {
                                 checked={data.furnished} />
                             <span>Furnished</span>
                         </div>
-                        {/* <div className='flex gap-2'>
-                            <input
-                                onChange={(e) => setData(pre => ({ ...pre, off: e.target.checked }))}
-                                type="checkbox" className='w-5' />
-                            <span>Offer</span>
-                        </div> */}
-
                     </div>
                     <div className='flex my-4 flex-wrap gap-6'>
                         <div className='flex items-center gap-2'>
@@ -174,20 +180,18 @@ export default function UpdateListing() {
                             const src = isFile ? URL.createObjectURL(img) : img;
                             return (
                                 <div key={i} className="relative group">
-                                    <img 
-                                        key={i}
-                                        src={src}
-                                        alt="preview"
-                                        className="h-24 w-full object-cover rounded-lg border"
-                                    />
-                                    {/* <div type="button" class=" absolute  animate-spin " disabled>
-
-                                        <ImSpinner9  size={30}  className="text-black"/>
-                                    </div> */}
+                             
+                                        <img
+                                            key={i}
+                                            src={src}
+                                            alt="preview"
+                                         
+                                            className="object-cover rounded-lg border relative w-full h-24"
+                                        />
                                     <button
                                         type="button"
-                                        onClick={() => removeImage(i)}
-                                        className="absolute top-1 right-1 bg-black bg-opacity-50 text-white rounded-full p-1 text-xs hidden group-hover:block"
+                                        onClick={() => removeImage( src)}
+                                        className="absolute top-1 right-1 bg-black bg-opacity-50 text-white rounded-full p-1 text-xs "
                                     >
                                         ❌
                                     </button>
@@ -199,7 +203,7 @@ export default function UpdateListing() {
                         <input
                             onChange={(e) => setData(prev => ({
                                 ...prev,
-                                imageUrl: Array.from(e.target.files)
+                                NewimageUrl: Array.from(e.target.files)
                             }))}
                             type="file"
                             className='w-full rounded-lg p-3 border
