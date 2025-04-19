@@ -29,7 +29,7 @@ const ListingSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  furninshed: {
+  furnished: {
     type: Boolean,
     required: true,
   },
@@ -56,6 +56,7 @@ const ListingSchema = new mongoose.Schema({
     type: String,
     required: true,
     ref: "User",
+    index: true
   },
 });
 

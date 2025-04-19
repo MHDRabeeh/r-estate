@@ -28,7 +28,7 @@ export async function POST(request) {
     const discountPrice = formData.get("discountPrice");
     const bedrooms = formData.get("bedrooms");
     const bathrooms = formData.get("bathrooms");
-    const furninshed = formData.get("furnished");
+    const furnished = formData.get("furnished");
     const parking = formData.get("parking");
     const sell = formData.get("sell");
     const rent = formData.get("rent");
@@ -72,7 +72,7 @@ export async function POST(request) {
       discountPrice,
       bedrooms,
       bathrooms,
-      furninshed,
+      furnished,
       parking,
       sell,
       rent,
