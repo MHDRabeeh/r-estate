@@ -23,6 +23,7 @@ export async function PUT(request) {
       });
     }
 
+    await dbConnect();
     const existingList = await Listing.findById(listingId);
 
     if (!existingList) {
@@ -53,5 +54,18 @@ export async function PUT(request) {
     if (new_ImageUrls.length > 0) {
       updateData.imageUrls = [...existingList.imageUrls, ...new_ImageUrls];
     }
-  } catch (error) {}
+    const updatedExistingListing = await Listing.findByIdAndUpdate(
+      listingId,
+      updateData,
+      { new: true }
+    );
+    return NextResponse.json({
+      success: true,
+      menubar: "Listing updated",
+      listing: updatedExistingListing,
+    });
+  } catch (error) {
+    console.log(error);
+    return NextResponse.json({ success: false, message: error.message });
+  }
 }
