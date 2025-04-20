@@ -6,9 +6,13 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
+import { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
+import Loader from "../../components/Loader";
 export default function UpdateListing() {
     const { getToken } = useAuth()
     const { id: listingId } = useParams();
+    const [loading, setLoading] = useState(true)
     const [data, setData] = useState({
         name: "", description: "", address: "", regularPrice: "",
         bathrooms: "",
@@ -23,20 +27,18 @@ export default function UpdateListing() {
         NewimageUrl: []
     })
     console.log(data.NewimageUrl);
-
-
     useEffect(() => {
 
         const fetchData = async () => {
             try {
                 const token = await getToken();
+                setLoading(true)
                 const { data } = await axios.post("/api/listing/get", { listingId }, { headers: { Authorization: `Bearer ${token}` } })
                 console.log(data);
                 if (data.success) {
                     setData(data.list);
-
-
                 }
+                setLoading(false)
             } catch (error) {
                 console.error("Failed to fetch listing:", error);
             }
@@ -60,13 +62,23 @@ export default function UpdateListing() {
         formData.append("parking", data.parking)
         formData.append("sell", data.sell)
         formData.append("rent", data.rent)
-        data.imageUrls.forEach((file, index) => {
-            formData.append("images", file);
+        formData.append("listingId", listingId)
+        data?.NewimageUrl?.forEach((file, index) => {
+            formData.append("Newimages", file);
         });
         try {
+            const token = await getToken();
+            setLoading(true)
+            const { data } = await axios.put("/api/listing/update", formData, { headers: { Authorization: `Bearer ${token}` } })
+            if (data.message) {
+                setData(data.listing)
+                setLoading(false)
+                toast.success(data.message)
 
-
-
+            } else {
+                console.log(data);
+                setLoading(false)
+            }
         } catch (error) {
 
         }
@@ -74,11 +86,14 @@ export default function UpdateListing() {
     const removeImage = async (imageUrl) => {
         try {
             const token = await getToken();
+            setLoading(true)
             const { data } = await axios.put("/api/delete/cloudinary-image", { imageUrl, listingId }, { headers: { Authorization: `Bearer ${token}` } })
+            setLoading(false)
             if (data.success) {
                 setData((prev) => (
                     { ...prev, imageUrls: data.images }
                 ))
+                toast.success(data.message)
             } else {
                 console.log(data);
 
@@ -90,17 +105,21 @@ export default function UpdateListing() {
 
         }
     }
-    const removeNewSelectedImg = (removeIndex)=>{
-        setData((prev)=>{
-            const updatedImageArray = prev.NewimageUrl.filter((_,i)=>i!==removeIndex)
-            return(
-                {...prev,NewimageUrl:updatedImageArray}
+    const removeNewSelectedImg = (removeIndex) => {
+        setData((prev) => {
+            const updatedImageArray = prev.NewimageUrl.filter((_, i) => i !== removeIndex)
+            return (
+                { ...prev, NewimageUrl: updatedImageArray }
             )
         })
 
     }
+    if (loading) {
+        <Loader/>
+      }
     return (
         <main className='max-w-4xl mx-auto p-3 '>
+            <div><Toaster /></div>
             <h2 className='text-3xl font-semibold text-center py-5'>Update  Listing</h2>
             <form onSubmit={handleSubmit} className='flex flex-col sm:flex-row gap-5'>
                 <div className='flex flex-col gap-3 sm:w-1/2 '>
@@ -108,12 +127,15 @@ export default function UpdateListing() {
                         value={data.name} placeholder='Name' />
 
                     <textarea onChange={(e) => setData(pre => ({ ...pre, description: e.target.value }))}
-                       required  id="discription" className='w-full border border-gray-300 rounded-lg p-3'
+                        required id="discription" className='w-full border border-gray-300 rounded-lg p-3'
                         value={data.description} placeholder='Discription'>
                     </textarea>
+
                     <input onChange={(e) => setData(pre => ({ ...pre, address: e.target.value }))}
-                       required  type="text" id='address' className=' w-full  border border-gray-300 rounded-lg p-3'
+                        required type="text" id='address' className=' w-full  border border-gray-300 rounded-lg p-3'
                         value={data.address} placeholder='Address' />
+
+
 
                     <div className='flex flex-wrap gap-6'>
                         <div className='flex gap-2'>
@@ -122,6 +144,7 @@ export default function UpdateListing() {
                             />
                             <span>Sell</span>
                         </div>
+
                         <div className='flex gap-2'>
                             <input
                                 onChange={(e) => setData(pre => ({ ...pre, rent: e.target.checked }))} type="checkbox" className='w-5'
@@ -129,6 +152,7 @@ export default function UpdateListing() {
                             />
                             <span>Rent</span>
                         </div>
+                        
                         <div className='flex gap-2'>
                             <input onChange={(e) => setData(pre => ({ ...pre, parking: e.target.checked }))}
                                 type="checkbox" className='w-5'
@@ -152,7 +176,7 @@ export default function UpdateListing() {
 
                         </div>
                         <div className='flex items-center gap-2'>
-                            <input type="number"required
+                            <input type="number" required
                                 onChange={(e) => setData(pre => ({ ...pre, bathrooms: e.target.value }))}
                                 value={data.bathrooms}
                                 min="0"
@@ -205,7 +229,7 @@ export default function UpdateListing() {
                                     <button
                                         type="button"
                                         onClick={() => removeImage(src)}
-                                        className="absolute top-1 right-1 bg-black bg-opacity-50 text-white rounded-full p-1 text-xs "
+                                        className="absolute top-1 right-1 bg-black bg-opacity-50 text-white rounded-full p-1 text-xs cursor-pointer "
                                     >
                                         ❌
                                     </button>
@@ -252,7 +276,7 @@ export default function UpdateListing() {
                                         return {
                                             ...prev, NewimageUrl: [...prev.NewimageUrl, ...newFiles]
                                         }
-                                    }else{
+                                    } else {
                                         return {
                                             ...prev, NewimageUrl: [...newFiles]
                                         }
@@ -271,10 +295,7 @@ export default function UpdateListing() {
                             accept='image/*' />
 
                     </div>
-
                     <button type='submit' className='w-full p-3 bg-gray-700 text-white uppercase rounded'>Create Listing</button>
-
-
                 </div>
             </form>
 

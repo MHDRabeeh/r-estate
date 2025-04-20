@@ -30,11 +30,11 @@ export async function PUT(request) {
       return NextResponse.json({ sucess: false, message: "Listing Not Found" });
     }
 
-    if (existingList.useRef.toString() !== userId) {
+    if (existingList.userRef !== userId) {
       return NextResponse.json({ success: false, message: "Unauthorized" });
     }
     let new_ImageUrls = [];
-    const files = formData.getAll("");
+    const files = formData.getAll("Newimages");
     if (files && files.length > 0) {
       new_ImageUrls = await uploadToCloudinary(files);
     }
@@ -61,7 +61,7 @@ export async function PUT(request) {
     );
     return NextResponse.json({
       success: true,
-      menubar: "Listing updated",
+      message: "Listing updated",
       listing: updatedExistingListing,
     });
   } catch (error) {
