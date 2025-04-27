@@ -1,49 +1,73 @@
 import Link from 'next/link'
 import React from 'react'
-import { FaSearch } from 'react-icons/fa'
+import { FaSearch, FaHome, FaInfoCircle } from 'react-icons/fa'
 import { SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
 
 export default function Header() {
     return (
-        <header className='bg-slate-200 shadow-md'>
-            <div className='flex justify-between items-center max-w-6xl mx-auto p-3'>
-                <Link href="/">
-                    <h1 className='font-bold text-sm sm:text-xl flex flex-wrap'>
-                        <span className='text-slate-500'>Estate</span>
-                        <span className='text-slate-700'>Flow</span>
+        <header className='bg-white shadow-sm sticky top-0 z-50 border-b border-gray-100'>
+            <div className='flex justify-between items-center max-w-7xl mx-auto px-4 py-3'>
+                {/* Logo */}
+                <Link href="/" className='flex items-center space-x-1'>
+                    <h1 className='font-bold text-xl md:text-2xl'>
+                        <span className='text-blue-600'>Estate</span>
+                        <span className='text-gray-800'>Flow</span>
                     </h1>
                 </Link>
-                <form className='bg-slate-100 p-3 rounded-lg flex items-center'>
-                    <input type="text"
-                        placeholder='Search...'
-                        className='bg-transparent focus:outline-none 2-24 sm:w-64' />
-                    <button>
-                        <FaSearch className=" text-slate-600" />
-                    </button>
 
+                {/* Search Bar */}
+                <form className='hidden md:flex bg-gray-50 px-4 py-2 rounded-lg flex items-center flex-1 max-w-md mx-6 border border-gray-200 focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500 transition-all'>
+                    <input 
+                        type="text"
+                        placeholder='Search properties...'
+                        className='bg-transparent focus:outline-none w-full text-gray-700 placeholder-gray-400'
+                    />
+                    <button type="submit" className='text-gray-500 hover:text-blue-600 transition-colors'>
+                        <FaSearch />
+                    </button>
                 </form>
-                <ul className='flex gap-4'>
-                    <Link href="/">
-                        <li className='hidden md:inline text-slate-700 hover:underline'>
-                            Home
-                        </li>
+
+                {/* Navigation */}
+                <nav className='flex items-center space-x-4'>
+                    <Link href="/" className='hidden md:flex items-center space-x-1 text-gray-600 hover:text-blue-600 transition-colors px-3 py-2 rounded-md hover:bg-gray-50'>
+                        <FaHome className='text-sm' />
+                        <span className='text-sm font-medium'>Home</span>
                     </Link>
-                    <Link href="/about">
-                        <li className='hidden md:inline text-slate-700 hover:underline'>
-                            About
-                        </li>
+                    
+                    <Link href="/about" className='hidden md:flex items-center space-x-1 text-gray-600 hover:text-blue-600 transition-colors px-3 py-2 rounded-md hover:bg-gray-50'>
+                        <FaInfoCircle className='text-sm' />
+                        <span className='text-sm font-medium'>About</span>
                     </Link>
-                    <SignedIn>
-                        <UserButton />
-                    </SignedIn>
-                    <SignedOut>
-                        <Link href="/sign-in">
-                            <li className='hidden md:inline text-slate-700 hover:underline'>
-                                Sing in
-                            </li>
-                        </Link>
-                    </SignedOut>
-                </ul>
+
+                    <div className='ml-2'>
+                        <SignedIn>
+                            <UserButton afterSignOutUrl='/' appearance={{
+                                elements: {
+                                    userButtonAvatarBox: "w-8 h-8",
+                                }
+                            }} />
+                        </SignedIn>
+                        <SignedOut>
+                            <Link href="/sign-in" className='text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md transition-colors'>
+                                Sign in
+                            </Link>
+                        </SignedOut>
+                    </div>
+                </nav>
+            </div>
+
+            {/* Mobile Search - appears only on small screens */}
+            <div className='md:hidden px-4 pb-3'>
+                <form className='bg-gray-50 px-4 py-2 rounded-lg flex items-center border border-gray-200'>
+                    <input 
+                        type="text"
+                        placeholder='Search properties...'
+                        className='bg-transparent focus:outline-none w-full text-gray-700 placeholder-gray-400'
+                    />
+                    <button type="submit" className='text-gray-500 hover:text-blue-600 transition-colors'>
+                        <FaSearch />
+                    </button>
+                </form>
             </div>
         </header>
     )

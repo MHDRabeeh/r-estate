@@ -26,17 +26,17 @@ export default function UpdateListing() {
         imageUrls: [],
         NewimageUrl: []
     })
-    console.log(data.NewimageUrl);
+
     useEffect(() => {
 
         const fetchData = async () => {
             try {
                 const token = await getToken();
                 setLoading(true)
-                const { data } = await axios.post("/api/listing/get", { listingId }, { headers: { Authorization: `Bearer ${token}` } })
-                console.log(data);
+                const { data } = await axios.get(`/api/listing/get?listingId=${listingId}`, { headers: { Authorization: `Bearer ${token}` } })
+               
                 if (data.success) {
-                    setData(data.list);
+                    setData(data.listings[0]);
                 }
                 setLoading(false)
             } catch (error) {
@@ -80,7 +80,8 @@ export default function UpdateListing() {
                 setLoading(false)
             }
         } catch (error) {
-
+            console.log(error.message);
+            
         }
     }
     const removeImage = async (imageUrl) => {

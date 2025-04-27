@@ -115,6 +115,7 @@ const CreateListing = () => {
                                 checked={data.furnished} />
                             <span>Furnished</span>
                         </div>
+                        
                         {/* <div className='flex gap-2'>
                             <input
                                 onChange={(e) => setData(pre => ({ ...pre, off: e.target.checked }))}
