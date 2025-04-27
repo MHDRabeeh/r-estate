@@ -9,8 +9,9 @@ import Image from "next/image";
 import { Toaster } from "react-hot-toast";
 import toast from "react-hot-toast";
 import Loader from "../../components/Loader";
+import { useRouter } from "next/router";
 export default function UpdateListing() {
-    const { getToken } = useAuth()
+    const { getToken,isSignedIn } = useAuth()
     const { id: listingId } = useParams();
     const [loading, setLoading] = useState(true)
     const [data, setData] = useState({
@@ -26,6 +27,12 @@ export default function UpdateListing() {
         imageUrls: [],
         NewimageUrl: []
     })
+    const router = useRouter()
+    useEffect(() => {
+        if (!isSignedIn) {
+            router.push("/sign-in")
+        }
+    }, [isSignedIn, router])
 
     useEffect(() => {
 
@@ -34,13 +41,14 @@ export default function UpdateListing() {
                 const token = await getToken();
                 setLoading(true)
                 const { data } = await axios.get(`/api/listing/get?listingId=${listingId}`, { headers: { Authorization: `Bearer ${token}` } })
-               
+
                 if (data.success) {
                     setData(data.listings[0]);
                 }
-                setLoading(false)
             } catch (error) {
                 console.error("Failed to fetch listing:", error);
+            } finally {
+                setLoading(false)
             }
 
         }
@@ -81,7 +89,7 @@ export default function UpdateListing() {
             }
         } catch (error) {
             console.log(error.message);
-            
+
         }
     }
     const removeImage = async (imageUrl) => {
@@ -115,15 +123,15 @@ export default function UpdateListing() {
         })
 
     }
-    if (loading) {
-        <Loader/>
-      }
+    if (loading) return <Loader />
+
+
     return (
         <main className='max-w-4xl mx-auto p-3 '>
             <div><Toaster /></div>
             <h2 className='text-3xl font-semibold text-center py-5'>Update  Listing</h2>
             <form onSubmit={handleSubmit} className='flex flex-col sm:flex-row gap-5'>
-                <div className='flex flex-col gap-3 sm:w-1/2 '>
+                {data && <div className='flex flex-col gap-3 sm:w-1/2 '>
                     <input required onChange={(e) => setData(pre => ({ ...pre, name: e.target.value }))} type="text" id='name' className=' w-full shadow-sm  border border-gray-300 rounded-lg p-3'
                         value={data.name} placeholder='Name' />
 
@@ -153,7 +161,7 @@ export default function UpdateListing() {
                             />
                             <span>Rent</span>
                         </div>
-                        
+
                         <div className='flex gap-2'>
                             <input onChange={(e) => setData(pre => ({ ...pre, parking: e.target.checked }))}
                                 type="checkbox" className='w-5'
@@ -208,6 +216,9 @@ export default function UpdateListing() {
                         </div>
                     </div>
                 </div>
+
+                }
+
                 <div className='flex flex-col gap-3 sm:w-1/2'>
                     <div className='flex items-center text-center'><span className='font-semibold text-gray-800'>Images:</span>
                         <p className='text-gray-500 text-sm'>The first image will be the cover (max 6)</p>

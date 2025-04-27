@@ -3,7 +3,8 @@ import axios from 'axios';
 import React from 'react'
 import { useState } from 'react'
 import { useAuth } from "@clerk/nextjs";
-
+import { useRouter } from "next/navigation";
+import { useEffect } from 'react';
 const CreateListing = () => {
     const [data, setData] = useState({
         name: "", description: "", address: "", regularPrice: "",
@@ -17,7 +18,15 @@ const CreateListing = () => {
         rent: false,
         imageUrl: []
     })
-    const { getToken } = useAuth()
+    const { getToken, isSignedIn } = useAuth()
+    const router = useRouter()
+    useEffect(() => {
+        if (!isSignedIn) {
+            router.push("/sign-in")
+        }
+    }, [isSignedIn,router])
+
+
     async function handleSubmit(e) {
         console.log(data);
 
@@ -115,7 +124,7 @@ const CreateListing = () => {
                                 checked={data.furnished} />
                             <span>Furnished</span>
                         </div>
-                        
+
                         {/* <div className='flex gap-2'>
                             <input
                                 onChange={(e) => setData(pre => ({ ...pre, off: e.target.checked }))}
@@ -154,7 +163,7 @@ const CreateListing = () => {
                         </div>
                         <div className='flex items-center gap-2'>
                             <input min={"0"} required onChange={(e) => setData(pre => ({ ...pre, discountPrice: e.target.value }))} type="number"
-                             value={data.discountPrice}    className='w-20 h-10 p-3 border rounded-lg border-gray-300' />
+                                value={data.discountPrice} className='w-20 h-10 p-3 border rounded-lg border-gray-300' />
                             <div className='flex flex-col items-center'>
                                 <p>Discount price</p>
                                 <span className='text-xs '>( $ / month)</span>

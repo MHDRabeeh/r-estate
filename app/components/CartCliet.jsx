@@ -17,7 +17,7 @@ export default  function CartCliet({ property }) {
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
         />
         <div className="absolute top-2 right-2 bg-cyan-500 text-white px-2 py-0.5 rounded text-xs font-bold transition-all duration-300 group-hover:bg-cyan-600">
-          {property.type === "rent" ? "For Rent" : "For Sale"}
+          {property.rent === true ? "For Rent" : "For Sale"}
         </div>
         {property.discountPrice && (
           <div className="absolute top-2 left-2 bg-red-500 text-white px-2 py-0.5 rounded text-xs font-bold">

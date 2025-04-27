@@ -17,7 +17,7 @@ export async function GET(request) {
       );
     }
     const { searchParams } = new URL(request.url);
-    console.log({searchParams});
+
     
     await dbConnect();
     const query = {};
@@ -59,10 +59,10 @@ export async function GET(request) {
     }else if (sortValue === "createdAt_asc"){
       sort.createdAt = 1
     }
-    console.log(query,"query");
+   
     
     const listings = await Listing.find(query).sort(sort);
-    console.log("LLLLLLLLLLissssssss",listings);
+  
     
     return NextResponse.json({ success: true, listings });
   } catch (error) {

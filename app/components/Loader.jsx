@@ -1,5 +1,5 @@
 import React from 'react'
-
+import { Toaster } from "react-hot-toast";
 const Loader = () => {
     return (
         <div className="fixed inset-0 bg-white bg-opacity-90 flex flex-col justify-center items-center z-50">
