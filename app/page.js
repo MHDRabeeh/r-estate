@@ -36,7 +36,7 @@ export default async function Home(params) {
           href={"/search"}
           className="bg-blue-800 text-white px-4 py-2 w-max rounded-md text-sm hover:bg-blue-700 transition"
         >
-          Let's Get Started
+          Let&apos; s Get Started
         </Link>
       </div>
 
