@@ -60,7 +60,7 @@ export default async function Home(params) {
           We have a wide range of properties for you to choose from.
         </p>
         <Link
-          href={"/search"}
+          href={"/search?sort=regularPrice_desc"}
           className="bg-blue-800 text-white px-4 py-2 w-max rounded-md text-sm hover:bg-blue-700 transition"
         >
           Let&apos;s Get Started

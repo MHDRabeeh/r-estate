@@ -25,7 +25,7 @@ const SearchContent = () => {
 
  
   useEffect(() => {
-    const q = searchParams.get("q") || '';
+    const q = searchParams.get("q") || "";
     const newFilters = { ...filters };
     ["rent", "sell", "parking", "furnished"].forEach((key) => {
       newFilters[key] = searchParams.get(key) === "true";
@@ -36,7 +36,7 @@ const SearchContent = () => {
     setFilters(newFilters);
     setSort(sortParam);
 
-    if (q || Object.values(newFilters).some(v => v)) {
+    if (sortParam || q || Object.values(newFilters).some(v => v)){
       fetchListings(q, newFilters, sortParam);
     }
   }, []);
