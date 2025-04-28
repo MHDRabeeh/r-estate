@@ -5,6 +5,7 @@ import { useState } from 'react'
 import { useAuth } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { useEffect } from 'react';
+import Loader from '../components/Loader';
 const CreateListing = () => {
     const [data, setData] = useState({
         name: "", description: "", address: "", regularPrice: "",
@@ -18,15 +19,16 @@ const CreateListing = () => {
         rent: false,
         imageUrl: []
     })
+    const [loading, setLoading] = useState(false)
     const { getToken, isSignedIn } = useAuth()
     const router = useRouter()
-  
-    
+
+
     useEffect(() => {
-        if (isSignedIn===false) {
+        if (isSignedIn === false) {
             router.push("/sign-in")
         }
-    }, [isSignedIn,router])
+    }, [isSignedIn, router])
 
 
     async function handleSubmit(e) {
@@ -51,6 +53,7 @@ const CreateListing = () => {
 
         try {
             const token = await getToken()
+            setLoading(true)
             const { data } = await axios.post("/api/listing/create", formData, { headers: { Authorization: `Bearer ${token}` } })
             if (data.success) {
                 setData({
@@ -64,8 +67,13 @@ const CreateListing = () => {
                     sell: false,
                     rent: false,
                     imageUrl: []
-                })
-                console.log(data.listedData);
+                }
+
+                )
+                let listingId = data.listedData._id
+                router.push(`/details-page/${listingId}`)
+                setLoading(false)
+
 
             } else {
                 console.log(data);
@@ -85,6 +93,10 @@ const CreateListing = () => {
                 imageUrl: existingImage
             }
         })
+    }
+
+    if (loading) {
+        return <Loader />
     }
 
     return (
@@ -156,7 +168,7 @@ const CreateListing = () => {
                             <input min={"0"} type="number"
                                 required onChange={(e) => setData(pre => ({ ...pre, regularPrice: e.target.value }))}
                                 value={data.regularPrice}
-                                className='w-20 h-10 p-3 border rounded-lg border-gray-300' />
+                                className='w-24 h-10 p-3 border rounded-lg border-gray-300' />
                             <div className='flex flex-col items-center'>
                                 <p>Regular price</p>
                                 <span className='text-xs '>( $ / month)</span>
@@ -165,7 +177,7 @@ const CreateListing = () => {
                         </div>
                         <div className='flex items-center gap-2'>
                             <input min={"0"} required onChange={(e) => setData(pre => ({ ...pre, discountPrice: e.target.value }))} type="number"
-                                value={data.discountPrice} className='w-20 h-10 p-3 border rounded-lg border-gray-300' />
+                                value={data.discountPrice} className='w-24 h-10 p-3 border rounded-lg border-gray-300' />
                             <div className='flex flex-col items-center'>
                                 <p>Discount price</p>
                                 <span className='text-xs '>( $ / month)</span>

@@ -20,7 +20,7 @@ export default async function Card({ property }) {
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
         />
         <div className="absolute top-2 right-2 bg-cyan-500 text-white px-2 py-0.5 rounded text-xs font-bold transition-all duration-300 group-hover:bg-cyan-600">
-          {property.type === "rent" ? "For Rent" : "For Sale"}
+          {property.rent == true ? "For Rent" : "For Sale"}
         </div>
         {property.discountPrice && (
           <div className="absolute top-2 left-2 bg-red-500 text-white px-2 py-0.5 rounded text-xs font-bold">
@@ -41,7 +41,7 @@ export default async function Card({ property }) {
                 <p className="text-[20px] font-bold text-cyan-600">
                   ${property.discountPrice}
                   <span className="text-[11px] font-normal text-gray-500">
-                    {property.type === "rent" ? "/mo" : ""}
+                    {property.rent === true ? "/mo" : ""}
                   </span>
                 </p>
                 <p className="text-[11px] text-gray-400 line-through">
@@ -52,7 +52,7 @@ export default async function Card({ property }) {
               <p className="text-[15px] font-bold text-cyan-600">
                 ${property.price}
                 <span className="text-[11px] font-normal text-gray-500">
-                  {property.type === "rent" ? "/mo" : ""}
+                  {property.rent === true ? "/mo" : ""}
                 </span>
               </p>
             )}

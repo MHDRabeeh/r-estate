@@ -6,23 +6,6 @@ export default async function Home(params) {
   let rentListing = null;
   let saleListing = null;
   let furnishedListing = null;
-  let property = [
-    {
-      name: "Sunny Ridge Apartment",
-      description:
-        "A modern apartment with lots of natural light, near central park and shopping area.",
-      address: "123 Sunshine Blvd, New York, NY 10001",
-      regularPrice: 1200,
-      discountPrice: 999,
-      bathrooms: 2,
-      bedrooms: 3,
-      parking: true,
-      type: "rent",
-      imageUrl: [
-        "https://res.cloudinary.com/dxju52nqy/image/upload/v1745126351/xfhiumkh6wsj0wl7eke9.jpg",
-      ],
-    },
-  ];
   try {
     const { data } = await axios.get(process.env.URL + `/api/listing/get`, {
       params: {
@@ -32,8 +15,7 @@ export default async function Home(params) {
       },
     });
     saleListing = data.listings;
-    console.log(data.listings, "ssssssssssssssssssss");
-    console.log(saleListing);
+
     
   } catch (error) {
     console.log(error.message);
@@ -47,8 +29,6 @@ export default async function Home(params) {
       },
     });
     rentListing = data.listings;
-    console.log(data, "rrrrrrrrrrrrrrrrrr");
-    console.log(rentListing);
     
   } catch (error) {
     console.log(error.message);
@@ -62,13 +42,10 @@ export default async function Home(params) {
       },
     });
     furnishedListing = data.listings;
-    console.log(data, "ffffffffffffffffffff");
-    console.log(furnishedListing);
     
   } catch (error) {
     console.log(error.message);
   }
-   
   return (
     <div className="bg-gray-50">
       <div className="max-w-4xl flex flex-col gap-6 mx-auto py-20 px-4">
@@ -86,7 +63,7 @@ export default async function Home(params) {
           href={"/search"}
           className="bg-blue-800 text-white px-4 py-2 w-max rounded-md text-sm hover:bg-blue-700 transition"
         >
-          Let&apos; s Get Started
+          Let&apos;s Get Started
         </Link>
       </div>
 
@@ -154,7 +131,7 @@ export default async function Home(params) {
                 Recent places for sale
               </h2>
               <Link
-                href={"/search?sale=true"}
+                href={"/search?sell=true"}
                 className="text-sm text-blue-800 hover:underline"
               >
                 Show more listings

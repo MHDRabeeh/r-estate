@@ -1,15 +1,16 @@
 "use client"
-import { useAuth } from "@clerk/nextjs";
+import { useAuth, useUser } from "@clerk/nextjs";
 import axios from "axios";
 import { useEffect } from "react";
 import { useState } from "react";
-import { useParams,useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { Toaster } from "react-hot-toast";
 import toast from "react-hot-toast";
 import Loader from "../../components/Loader";
 export default function UpdateListing() {
-    const { getToken,isSignedIn } = useAuth()
+    const { getToken, isSignedIn } = useAuth()
     const { id: listingId } = useParams();
+    const { user } = useUser()
     const [loading, setLoading] = useState(true)
     const [data, setData] = useState({
         name: "", description: "", address: "", regularPrice: "",
@@ -26,8 +27,8 @@ export default function UpdateListing() {
     })
     const router = useRouter()
     useEffect(() => {
-        if (isSignedIn===false) {
-           
+        if (isSignedIn === false) {
+
             router.push("/sign-in")
         }
     }, [isSignedIn, router])
@@ -39,7 +40,6 @@ export default function UpdateListing() {
                 const token = await getToken();
                 setLoading(true)
                 const { data } = await axios.get(`/api/listing/get?listingId=${listingId}`, { headers: { Authorization: `Bearer ${token}` } })
-
                 if (data.success) {
                     setData(data.listings[0]);
                 }
@@ -79,6 +79,7 @@ export default function UpdateListing() {
             if (data.message) {
                 setData(data.listing)
                 setLoading(false)
+
                 toast.success(data.message)
 
             } else {
@@ -94,6 +95,7 @@ export default function UpdateListing() {
         try {
             const token = await getToken();
             setLoading(true)
+
             const { data } = await axios.put("/api/delete/cloudinary-image", { imageUrl, listingId }, { headers: { Authorization: `Bearer ${token}` } })
             setLoading(false)
             if (data.success) {
@@ -122,6 +124,24 @@ export default function UpdateListing() {
 
     }
     if (loading) return <Loader />
+
+    console.log(!data.userRef === user.id, user.id, data.userRef);
+
+    if (user.id) {
+        if (data.userRef !== user.id) {
+            return (
+
+                <div className="flex items-center justify-center min-h-screen">
+                    <p className="text-red-600 bg-red-100 border border-red-400 p-3 rounded-md text-center">
+                        You are not authorized to update this form.
+                    </p>
+                </div>
+
+
+            )
+        }
+    }
+
 
 
     return (

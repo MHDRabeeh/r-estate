@@ -20,8 +20,8 @@ export async function POST(request) {
     const name = formData.get("name");
     const description = formData.get("description");
     const address = formData.get("address");
-    const regularPrice = formData.get("regularPrice");
-    const discountPrice = formData.get("discountPrice");
+    const regularPrice = parseInt(formData.get("regularPrice"));
+    const discountPrice = parseInt(formData.get("discountPrice"));
     const bedrooms = formData.get("bedrooms");
     const bathrooms = formData.get("bathrooms");
     const furnished = formData.get("furnished");
