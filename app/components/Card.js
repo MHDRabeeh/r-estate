@@ -2,7 +2,10 @@
 import { FaLocationDot } from "react-icons/fa6";
 import { FaBath, FaBed } from "react-icons/fa";
 import { TbParkingCircle } from "react-icons/tb";
+
 import Image from "next/image";
+import { redirect } from "next/navigation";
+import Link from "next/link";
 
 export default async function Card({ property }) {
   return (
@@ -10,7 +13,7 @@ export default async function Card({ property }) {
       {/* Image Container (about 70% of card) */}
       <div className="w-full aspect-[3/2] relative overflow-hidden">
         <Image
-          src={property.imageUrl}
+          src={property?.imageUrls[0]}
           alt={`${property.name} property`}
           fill
           className="object-cover transition-transform duration-500 group-hover:scale-110"
@@ -88,9 +91,9 @@ export default async function Card({ property }) {
           )}
         </div>
 
-        <button className="mt-2 w-full bg-cyan-500 hover:bg-cyan-600 text-white py-1.5 rounded text-[13px] font-medium transition-colors">
+        <Link href={`/details-page/${property._id}`} className="mt-2 w-full bg-cyan-500 hover:bg-cyan-600 text-center block text-white py-1.5 rounded text-[13px] font-medium transition-colors">
           View Details
-        </button>
+        </Link>
       </div>
     </div>
   );

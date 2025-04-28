@@ -20,8 +20,10 @@ const CreateListing = () => {
     })
     const { getToken, isSignedIn } = useAuth()
     const router = useRouter()
+  
+    
     useEffect(() => {
-        if (!isSignedIn) {
+        if (isSignedIn===false) {
             router.push("/sign-in")
         }
     }, [isSignedIn,router])

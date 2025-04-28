@@ -2,11 +2,13 @@
 import { FaLocationDot } from "react-icons/fa6";
 import { FaBath, FaBed } from "react-icons/fa";
 import { TbParkingCircle } from "react-icons/tb";
+import { redirect } from 'next/navigation'
 import Image from "next/image";
-
 export default  function CartCliet({ property }) {
+console.log(property);
+
   return (
-    <div className="group w-full flex flex-col gap-0 shadow-md rounded-lg overflow-hidden bg-white hover:shadow-lg transition-all duration-300 hover:-translate-y-1 h-full">
+    <div className="group w-full min-w-[300px] flex flex-col gap-0 shadow-md rounded-lg overflow-hidden bg-white hover:shadow-lg transition-all duration-300 hover:-translate-y-1 h-full">
       {/* Image Container (about 70% of card) */}
       <div className="w-full aspect-[3/2] relative overflow-hidden">
         <Image
@@ -88,7 +90,7 @@ export default  function CartCliet({ property }) {
           )}
         </div>
 
-        <button className="mt-2 w-full bg-cyan-500 hover:bg-cyan-600 text-white py-1.5 rounded text-[13px] font-medium transition-colors">
+        <button onClick={()=>redirect(`/details-page/${property._id}`)}  className="mt-2 w-full bg-cyan-500 hover:bg-cyan-600 text-white py-1.5 rounded text-[13px] font-medium transition-colors">
           View Details
         </button>
       </div>

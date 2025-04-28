@@ -1,21 +1,10 @@
-import mongoose from "mongoose";
+
 import Listing from "../../../../models/Listing";
-import { getAuth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import dbConnect from "../../../../config/db";
 
 export async function GET(request) {
   try {
-    const { userId } = getAuth(request);
-    if (!userId) {
-      return NextResponse.json(
-        {
-          sucess: false,
-          message: "Unauthorized access. User authentication failed.",
-        },
-        { status: 401 }
-      );
-    }
     const { searchParams } = new URL(request.url);
 
     
@@ -60,11 +49,19 @@ export async function GET(request) {
       sort.createdAt = 1
     }
    
-    
-    const listings = await Listing.find(query).sort(sort);
+    // limit
+    const limit = parseInt(searchParams.get("limit")) ;
   
     
+   let listings;
+  
+    if(limit){
+       listings = await Listing.find(query).sort(sort).limit(limit);
+    }else{
+       listings = await Listing.find(query).sort(sort);
+    }
     return NextResponse.json({ success: true, listings });
+   
   } catch (error) {
     console.log("this is the error",error.message);
     return NextResponse.json(

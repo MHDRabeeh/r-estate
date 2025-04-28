@@ -1,15 +1,12 @@
 "use client"
 import { useAuth } from "@clerk/nextjs";
-import { ImSpinner9 } from "react-icons/im";
 import axios from "axios";
 import { useEffect } from "react";
 import { useState } from "react";
-import { useParams } from "next/navigation";
-import Image from "next/image";
+import { useParams,useRouter } from "next/navigation";
 import { Toaster } from "react-hot-toast";
 import toast from "react-hot-toast";
 import Loader from "../../components/Loader";
-import { useRouter } from "next/router";
 export default function UpdateListing() {
     const { getToken,isSignedIn } = useAuth()
     const { id: listingId } = useParams();
@@ -29,7 +26,8 @@ export default function UpdateListing() {
     })
     const router = useRouter()
     useEffect(() => {
-        if (!isSignedIn) {
+        if (isSignedIn===false) {
+           
             router.push("/sign-in")
         }
     }, [isSignedIn, router])
@@ -225,7 +223,7 @@ export default function UpdateListing() {
                     </div>
                     <div className="grid grid-cols-3 gap-3">
                         {/* Show existing image URLs */}
-                        {data.imageUrls && data.imageUrls.map((img, i) => {
+                        {data?.imageUrls && data.imageUrls.map((img, i) => {
                             const isFile = img instanceof File;
                             const src = isFile ? URL.createObjectURL(img) : img;
                             return (
@@ -248,7 +246,7 @@ export default function UpdateListing() {
                                 </div>
                             );
                         })}
-                        {data.NewimageUrl && data.NewimageUrl.map((img, i) => {
+                        {data?.NewimageUrl && data.NewimageUrl.map((img, i) => {
                             const isFile = img instanceof File;
                             const src = isFile ? URL.createObjectURL(img) : img;
 
@@ -307,7 +305,7 @@ export default function UpdateListing() {
                             accept='image/*' />
 
                     </div>
-                    <button type='submit' className='w-full p-3 bg-gray-700 text-white uppercase rounded'>Create Listing</button>
+                    <button type='submit' className='w-full p-3 bg-gray-700 text-white uppercase rounded'>Update  Listing</button>
                 </div>
             </form>
 
